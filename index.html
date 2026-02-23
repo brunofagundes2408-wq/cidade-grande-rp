@@ -152,11 +152,13 @@ button:hover{
 </div>
 
 <script>
-<script>
+
 let staff = JSON.parse(localStorage.getItem("staff")) || [];
+let pendentes = JSON.parse(localStorage.getItem("pendentes")) || [];
 
 function salvar(){
     localStorage.setItem("staff", JSON.stringify(staff));
+    localStorage.setItem("pendentes", JSON.stringify(pendentes));
 }
 
 function login(){
@@ -167,6 +169,7 @@ function login(){
         document.getElementById("login").style.display="none";
         document.getElementById("dashboard").style.display="flex";
         atualizarLista();
+        atualizarPendentes();
     } else {
         alert("Acesso negado");
     }
@@ -179,6 +182,7 @@ function logout(){
 function mostrar(secao){
     document.getElementById("home").style.display="none";
     document.getElementById("staff").style.display="none";
+    document.getElementById("recrutamento").style.display="none";
     document.getElementById(secao).style.display="block";
 }
 
@@ -202,7 +206,7 @@ function atualizarLista(){
         lista.innerHTML += `
         <div class="staff-item">
             ${membro.nome} - ${membro.cargo}
-            <button onclick="remover(${index})" style="width:auto;background:red;margin-left:10px;">Remover</button>
+            <button onclick="remover(${index})" style="background:red;">Remover</button>
         </div>`;
     });
 }
@@ -212,7 +216,42 @@ function remover(index){
     salvar();
     atualizarLista();
 }
-</script>
 
-</body>
-</html>
+function enviarRecrutamento(){
+    const nome = document.getElementById("recNome").value;
+    const cargo = document.getElementById("recCargo").value;
+
+    if(nome === "") return;
+
+    pendentes.push({nome,cargo});
+    salvar();
+    atualizarPendentes();
+}
+
+function atualizarPendentes(){
+    const lista = document.getElementById("listaPendentes");
+    lista.innerHTML="";
+
+    pendentes.forEach((membro,index)=>{
+        lista.innerHTML += `
+        <div class="staff-item">
+            ${membro.nome} - ${membro.cargo}
+            <button onclick="aprovar(${index})" style="background:green;">Aprovar</button>
+            <button onclick="reprovar(${index})" style="background:red;">Reprovar</button>
+        </div>`;
+    });
+}
+
+function aprovar(index){
+    staff.push(pendentes[index]);
+    pendentes.splice(index,1);
+    salvar();
+    atualizarLista();
+    atualizarPendentes();
+}
+
+function reprovar(index){
+    pendentes.splice(index,1);
+    salvar();
+    atualizarPendentes();
+}
