@@ -3,148 +3,91 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cidade Grande RP - Recrutamento</title>
+<title>Cidade Grande RP - Painel</title>
 
 <style>
 body{
-margin:0;
-font-family:Arial, sans-serif;
-background:url('https://i.imgur.com/3ZQ3Z5F.jpeg') no-repeat center center fixed;
-background-size:cover;
-color:white;
-text-align:center;
+    margin:0;
+    font-family:Arial, sans-serif;
+    background: linear-gradient(135deg,#000000,#0a1a2f);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    color:white;
 }
 
-.overlay{
-background:rgba(0,0,0,0.8);
-min-height:100vh;
-padding:20px;
+.container{
+    background:#111;
+    padding:40px;
+    border-radius:15px;
+    box-shadow:0 0 30px #00bfff50;
+    width:350px;
+    text-align:center;
 }
 
-.box{
-background:#111;
-padding:20px;
-border-radius:10px;
-max-width:400px;
-margin:20px auto;
-box-shadow:0 0 15px #00aaff;
-}
-
-input, textarea{
-width:100%;
-padding:10px;
-margin:5px 0;
-border:none;
-border-radius:5px;
+input{
+    width:100%;
+    padding:10px;
+    margin:10px 0;
+    border:none;
+    border-radius:8px;
+    outline:none;
 }
 
 button{
-background:#00aaff;
-border:none;
-padding:10px;
-color:white;
-border-radius:5px;
-cursor:pointer;
-width:100%;
+    width:100%;
+    padding:10px;
+    background:#00bfff;
+    border:none;
+    border-radius:8px;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
 }
 
 button:hover{
-background:#0088cc;
+    background:#0080ff;
 }
 
-.hidden{
-display:none;
-}
-
-.progress{
-height:20px;
-background:#333;
-border-radius:10px;
-overflow:hidden;
-margin-top:10px;
-}
-
-.progress-bar{
-height:100%;
-background:#00aaff;
-width:0%;
+.painel{
+    display:none;
 }
 </style>
 </head>
-
 <body>
-<div class="overlay">
 
-<h1>🔵 Cidade Grande RP</h1>
-<h3>Sistema Oficial de Recrutamento</h3>
+<div class="container" id="login">
+    <h2>Cidade Grande RP</h2>
+    <p>Sistema Oficial de Recrutamento</p>
 
-<div class="box" id="codigoBox">
-<h3>Digite o código de acesso</h3>
-<input type="text" id="codigo">
-<button onclick="verificarCodigo()">Entrar</button>
+    <input type="text" id="usuario" placeholder="Usuário">
+    <input type="password" id="senha" placeholder="Senha">
+    <button onclick="login()">Entrar</button>
 </div>
 
-<div class="box hidden" id="formBox">
-<h3>Formulário Staff</h3>
-<input type="text" placeholder="Nome RP" id="nome">
-<input type="number" placeholder="Idade" id="idade">
-<textarea placeholder="Experiência como staff" id="exp"></textarea>
-<textarea placeholder="Disponibilidade" id="disp"></textarea>
-<textarea placeholder="Se dois membros brigarem, o que faria?" id="sit"></textarea>
-<button onclick="enviar()">Enviar</button>
-
-<div id="resultado" class="hidden">
-<h3 id="pontuacaoTexto"></h3>
-<div class="progress">
-<div class="progress-bar" id="barra"></div>
-</div>
-<p id="nivel"></p>
-</div>
-</div>
-
+<div class="container painel" id="painel">
+    <h2>👑 Painel de Dono</h2>
+    <p id="bemvindo"></p>
+    <p>Cargo: DONO</p>
 </div>
 
 <script>
+function login(){
+    const user = document.getElementById("usuario").value;
+    const pass = document.getElementById("senha").value;
 
-const codigoCorreto = "STAFF2026CDG";
+    const donos = ["Bruno","Leeh"];
 
-function verificarCodigo(){
-const codigo = document.getElementById("codigo").value;
-if(codigo === codigoCorreto){
-document.getElementById("codigoBox").classList.add("hidden");
-document.getElementById("formBox").classList.remove("hidden");
-}else{
-alert("Código incorreto!");
+    if(donos.includes(user) && pass === "BruuLeeh"){
+        document.getElementById("login").style.display="none";
+        document.getElementById("painel").style.display="block";
+        document.getElementById("bemvindo").innerText="Bem-vindo(a), " + user + "!";
+    } else {
+        alert("Acesso negado!");
+    }
 }
-}
-
-function enviar(){
-let pontos = 0;
-
-let idade = parseInt(document.getElementById("idade").value);
-let exp = document.getElementById("exp").value.length;
-let disp = document.getElementById("disp").value.length;
-let sit = document.getElementById("sit").value.length;
-
-if(idade >= 16) pontos += 20;
-if(exp > 20) pontos += 25;
-if(disp > 20) pontos += 20;
-if(sit > 30) pontos += 35;
-
-document.getElementById("resultado").classList.remove("hidden");
-document.getElementById("pontuacaoTexto").innerText = "Pontuação: " + pontos + "%";
-document.getElementById("barra").style.width = pontos + "%";
-
-let nivel = "";
-
-if(pontos >= 80) nivel = "🔥 Forte candidato a ADMIN";
-else if(pontos >= 60) nivel = "✅ Bom candidato a MOD";
-else if(pontos >= 40) nivel = "⚠️ Pode melhorar";
-else nivel = "❌ Não recomendado";
-
-document.getElementById("nivel").innerText = nivel;
-}
-
 </script>
 
 </body>
