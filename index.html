@@ -2,152 +2,122 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cidade Grande RP - Painel</title>
+<title>Painel Cidade Grande RP</title>
 
 <style>
 body{
     margin:0;
-    font-family:Arial, sans-serif;
-    background: linear-gradient(135deg,#000000,#001f3f);
+    font-family:Arial;
+    background:#0f172a;
     color:white;
-    overflow:hidden;
 }
 
-.login-box{
+#login{
     height:100vh;
     display:flex;
+    flex-direction:column;
     justify-content:center;
     align-items:center;
 }
 
-.box{
-    background:#111;
-    padding:40px;
-    border-radius:15px;
-    box-shadow:0 0 40px #00bfff80;
-    width:350px;
-    text-align:center;
-}
-
-input, select{
-    width:100%;
+input{
     padding:10px;
-    margin:10px 0;
+    margin:5px;
     border:none;
-    border-radius:8px;
+    border-radius:5px;
 }
 
 button{
-    width:100%;
-    padding:10px;
-    background:#00bfff;
+    padding:10px 15px;
+    margin:5px;
     border:none;
-    border-radius:8px;
-    color:white;
-    font-weight:bold;
+    border-radius:5px;
     cursor:pointer;
-    transition:0.3s;
+    background:#2563eb;
+    color:white;
 }
 
-button:hover{
-    background:#0099ff;
-    transform:scale(1.03);
-}
-
-.dashboard{
+#dashboard{
     display:none;
-    display:flex;
 }
 
 .sidebar{
-    width:230px;
-    background:#0a0a0a;
+    width:200px;
+    background:#111827;
     height:100vh;
-    padding:20px;
-    box-shadow:0 0 20px #00bfff40;
+    position:fixed;
+    padding-top:20px;
 }
 
-.sidebar h3{
-    text-align:center;
+.sidebar button{
+    width:90%;
+    margin:10px;
 }
 
 .content{
-    flex:1;
-    padding:40px;
-    overflow-y:auto;
-}
-
-.card{
-    background:#111;
-    padding:25px;
-    border-radius:15px;
-    margin-bottom:20px;
-    box-shadow:0 0 25px #00bfff40;
-    animation:fade 0.3s ease-in-out;
-}
-
-@keyframes fade{
-    from{opacity:0;transform:translateY(10px);}
-    to{opacity:1;transform:translateY(0);}
-}
-
-.owner-badge{
-    background:linear-gradient(90deg,#00bfff,#0080ff);
-    padding:5px 10px;
-    border-radius:10px;
-    display:inline-block;
-    margin-top:10px;
+    margin-left:220px;
+    padding:20px;
 }
 
 .staff-item{
-    margin-top:10px;
+    background:#1e293b;
     padding:10px;
-    background:#1a1a1a;
-    border-radius:8px;
+    margin:5px 0;
+    border-radius:5px;
 }
 </style>
 </head>
 <body>
 
-<div class="login-box" id="login">
-    <div class="box">
-        <h2>Cidade Grande RP</h2>
-        <input type="text" id="usuario" placeholder="Usuário">
-        <input type="password" id="senha" placeholder="Senha">
-        <button onclick="login()">Entrar</button>
-    </div>
+<!-- LOGIN -->
+<div id="login">
+    <h2>Login Painel</h2>
+    <input type="text" id="usuario" placeholder="Usuário">
+    <input type="password" id="senha" placeholder="Senha">
+    <button onclick="login()">Entrar</button>
 </div>
 
-<div class="dashboard" id="dashboard">
+<!-- DASHBOARD -->
+<div id="dashboard">
     <div class="sidebar">
-        <h3>👑 Painel</h3>
         <button onclick="mostrar('home')">Home</button>
         <button onclick="mostrar('staff')">Staff</button>
+        <button onclick="mostrar('recrutamento')">Recrutamento</button>
         <button onclick="logout()">Logout</button>
     </div>
 
     <div class="content">
-        <div id="home" class="card">
-            <h2>👑 Donos Oficiais</h2>
-            <p><strong>Bruno / Leticia</strong></p>
-            <div class="owner-badge">Cargo: DONO SUPREMO</div>
-            <p style="margin-top:15px;">Sistema Oficial Cidade Grande RP</p>
+
+        <!-- HOME -->
+        <div id="home">
+            <h1>Bruno / Leticia</h1>
+            <h3>DONOS SUPREMOS</h3>
         </div>
 
-        <div id="staff" class="card" style="display:none;">
+        <!-- STAFF -->
+        <div id="staff" style="display:none;">
             <h2>Gerenciar Staff</h2>
-            <p>Total de membros: <span id="contador">0</span></p>
+            <p>Total: <span id="contador">0</span></p>
 
-            <input type="text" id="novoNome" placeholder="Nome do Staff">
-            <select id="novoCargo">
-                <option>Admin</option>
-                <option>Moderador</option>
-            </select>
+            <input type="text" id="novoNome" placeholder="Nome">
+            <input type="text" id="novoCargo" placeholder="Cargo">
             <button onclick="adicionarStaff()">Adicionar</button>
 
             <div id="listaStaff"></div>
         </div>
+
+        <!-- RECRUTAMENTO -->
+        <div id="recrutamento" style="display:none;">
+            <h2>Recrutamento</h2>
+
+            <input type="text" id="recNome" placeholder="Nome">
+            <input type="text" id="recCargo" placeholder="Cargo desejado">
+            <button onclick="enviarRecrutamento()">Enviar</button>
+
+            <h3>Pendentes</h3>
+            <div id="listaPendentes"></div>
+        </div>
+
     </div>
 </div>
 
@@ -167,11 +137,11 @@ function login(){
 
     if((user === "Bruno" || user === "Leticia") && pass === "BruuLeeh"){
         document.getElementById("login").style.display="none";
-        document.getElementById("dashboard").style.display="flex";
+        document.getElementById("dashboard").style.display="block";
         atualizarLista();
         atualizarPendentes();
     } else {
-        alert("Acesso negado");
+        alert("Usuário ou senha incorretos");
     }
 }
 
@@ -255,3 +225,8 @@ function reprovar(index){
     salvar();
     atualizarPendentes();
 }
+
+</script>
+
+</body>
+</html>
