@@ -152,7 +152,12 @@ button:hover{
 </div>
 
 <script>
-let staff = [];
+<script>
+let staff = JSON.parse(localStorage.getItem("staff")) || [];
+
+function salvar(){
+    localStorage.setItem("staff", JSON.stringify(staff));
+}
 
 function login(){
     const user = document.getElementById("usuario").value;
@@ -161,6 +166,7 @@ function login(){
     if((user === "Bruno" || user === "Leticia") && pass === "BruuLeeh"){
         document.getElementById("login").style.display="none";
         document.getElementById("dashboard").style.display="flex";
+        atualizarLista();
     } else {
         alert("Acesso negado");
     }
@@ -183,6 +189,7 @@ function adicionarStaff(){
     if(nome === "") return;
 
     staff.push({nome,cargo});
+    salvar();
     atualizarLista();
 }
 
@@ -202,6 +209,7 @@ function atualizarLista(){
 
 function remover(index){
     staff.splice(index,1);
+    salvar();
     atualizarLista();
 }
 </script>
