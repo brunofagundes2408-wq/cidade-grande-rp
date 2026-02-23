@@ -9,8 +9,9 @@
 body{
     margin:0;
     font-family:Arial, sans-serif;
-    background: linear-gradient(135deg,#000000,#021a33);
+    background: linear-gradient(135deg,#000000,#001f3f);
     color:white;
+    overflow:hidden;
 }
 
 .login-box{
@@ -24,7 +25,7 @@ body{
     background:#111;
     padding:40px;
     border-radius:15px;
-    box-shadow:0 0 30px #00bfff50;
+    box-shadow:0 0 40px #00bfff80;
     width:350px;
     text-align:center;
 }
@@ -46,10 +47,12 @@ button{
     color:white;
     font-weight:bold;
     cursor:pointer;
+    transition:0.3s;
 }
 
 button:hover{
-    background:#0080ff;
+    background:#0099ff;
+    transform:scale(1.03);
 }
 
 .dashboard{
@@ -58,35 +61,50 @@ button:hover{
 }
 
 .sidebar{
-    width:220px;
-    background:#0d0d0d;
+    width:230px;
+    background:#0a0a0a;
     height:100vh;
     padding:20px;
+    box-shadow:0 0 20px #00bfff40;
 }
 
 .sidebar h3{
     text-align:center;
 }
 
-.sidebar button{
-    margin-top:10px;
-}
-
 .content{
     flex:1;
     padding:40px;
+    overflow-y:auto;
 }
 
 .card{
     background:#111;
-    padding:20px;
+    padding:25px;
     border-radius:15px;
     margin-bottom:20px;
-    box-shadow:0 0 20px #00bfff30;
+    box-shadow:0 0 25px #00bfff40;
+    animation:fade 0.3s ease-in-out;
 }
 
-.staff-list{
+@keyframes fade{
+    from{opacity:0;transform:translateY(10px);}
+    to{opacity:1;transform:translateY(0);}
+}
+
+.owner-badge{
+    background:linear-gradient(90deg,#00bfff,#0080ff);
+    padding:5px 10px;
+    border-radius:10px;
+    display:inline-block;
     margin-top:10px;
+}
+
+.staff-item{
+    margin-top:10px;
+    padding:10px;
+    background:#1a1a1a;
+    border-radius:8px;
 }
 </style>
 </head>
@@ -111,12 +129,16 @@ button:hover{
 
     <div class="content">
         <div id="home" class="card">
-            <h2 id="bemvindo"></h2>
-            <p id="cargo"></p>
+            <h2>👑 Donos Oficiais</h2>
+            <p><strong>Bruno / Leticia</strong></p>
+            <div class="owner-badge">Cargo: DONO SUPREMO</div>
+            <p style="margin-top:15px;">Sistema Oficial Cidade Grande RP</p>
         </div>
 
         <div id="staff" class="card" style="display:none;">
             <h2>Gerenciar Staff</h2>
+            <p>Total de membros: <span id="contador">0</span></p>
+
             <input type="text" id="novoNome" placeholder="Nome do Staff">
             <select id="novoCargo">
                 <option>Admin</option>
@@ -124,33 +146,24 @@ button:hover{
             </select>
             <button onclick="adicionarStaff()">Adicionar</button>
 
-            <div class="staff-list" id="listaStaff"></div>
+            <div id="listaStaff"></div>
         </div>
     </div>
 </div>
 
 <script>
-let usuarioAtual = "";
-let cargoAtual = "";
-
 let staff = [];
 
 function login(){
     const user = document.getElementById("usuario").value;
     const pass = document.getElementById("senha").value;
 
-    if((user === "Bruno" || user === "Leeh") && pass === "BruuLeeh"){
-        usuarioAtual = user;
-        cargoAtual = "Dono";
+    if((user === "Bruno" || user === "Leticia") && pass === "BruuLeeh"){
+        document.getElementById("login").style.display="none";
+        document.getElementById("dashboard").style.display="flex";
     } else {
         alert("Acesso negado");
-        return;
     }
-
-    document.getElementById("login").style.display="none";
-    document.getElementById("dashboard").style.display="flex";
-    document.getElementById("bemvindo").innerText="Bem-vindo(a), " + usuarioAtual;
-    document.getElementById("cargo").innerText="Cargo: " + cargoAtual;
 }
 
 function logout(){
@@ -176,10 +189,11 @@ function adicionarStaff(){
 function atualizarLista(){
     const lista = document.getElementById("listaStaff");
     lista.innerHTML="";
+    document.getElementById("contador").innerText = staff.length;
 
     staff.forEach((membro,index)=>{
         lista.innerHTML += `
-        <div style="margin-top:10px;">
+        <div class="staff-item">
             ${membro.nome} - ${membro.cargo}
             <button onclick="remover(${index})" style="width:auto;background:red;margin-left:10px;">Remover</button>
         </div>`;
