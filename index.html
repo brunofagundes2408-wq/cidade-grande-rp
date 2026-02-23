@@ -9,15 +9,18 @@
 body{
     margin:0;
     font-family:Arial, sans-serif;
-    background: linear-gradient(135deg,#000000,#0a1a2f);
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
+    background: linear-gradient(135deg,#000000,#021a33);
     color:white;
 }
 
-.container{
+.login-box{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.box{
     background:#111;
     padding:40px;
     border-radius:15px;
@@ -26,13 +29,12 @@ body{
     text-align:center;
 }
 
-input{
+input, select{
     width:100%;
     padding:10px;
     margin:10px 0;
     border:none;
     border-radius:8px;
-    outline:none;
 }
 
 button{
@@ -44,49 +46,149 @@ button{
     color:white;
     font-weight:bold;
     cursor:pointer;
-    transition:0.3s;
 }
 
 button:hover{
     background:#0080ff;
 }
 
-.painel{
+.dashboard{
     display:none;
+    display:flex;
+}
+
+.sidebar{
+    width:220px;
+    background:#0d0d0d;
+    height:100vh;
+    padding:20px;
+}
+
+.sidebar h3{
+    text-align:center;
+}
+
+.sidebar button{
+    margin-top:10px;
+}
+
+.content{
+    flex:1;
+    padding:40px;
+}
+
+.card{
+    background:#111;
+    padding:20px;
+    border-radius:15px;
+    margin-bottom:20px;
+    box-shadow:0 0 20px #00bfff30;
+}
+
+.staff-list{
+    margin-top:10px;
 }
 </style>
 </head>
 <body>
 
-<div class="container" id="login">
-    <h2>Cidade Grande RP</h2>
-    <p>Sistema Oficial de Recrutamento</p>
-
-    <input type="text" id="usuario" placeholder="Usuário">
-    <input type="password" id="senha" placeholder="Senha">
-    <button onclick="login()">Entrar</button>
+<div class="login-box" id="login">
+    <div class="box">
+        <h2>Cidade Grande RP</h2>
+        <input type="text" id="usuario" placeholder="Usuário">
+        <input type="password" id="senha" placeholder="Senha">
+        <button onclick="login()">Entrar</button>
+    </div>
 </div>
 
-<div class="container painel" id="painel">
-    <h2>👑 Painel de Dono</h2>
-    <p id="bemvindo"></p>
-    <p>Cargo: DONO</p>
+<div class="dashboard" id="dashboard">
+    <div class="sidebar">
+        <h3>👑 Painel</h3>
+        <button onclick="mostrar('home')">Home</button>
+        <button onclick="mostrar('staff')">Staff</button>
+        <button onclick="logout()">Logout</button>
+    </div>
+
+    <div class="content">
+        <div id="home" class="card">
+            <h2 id="bemvindo"></h2>
+            <p id="cargo"></p>
+        </div>
+
+        <div id="staff" class="card" style="display:none;">
+            <h2>Gerenciar Staff</h2>
+            <input type="text" id="novoNome" placeholder="Nome do Staff">
+            <select id="novoCargo">
+                <option>Admin</option>
+                <option>Moderador</option>
+            </select>
+            <button onclick="adicionarStaff()">Adicionar</button>
+
+            <div class="staff-list" id="listaStaff"></div>
+        </div>
+    </div>
 </div>
 
 <script>
+let usuarioAtual = "";
+let cargoAtual = "";
+
+let staff = [];
+
 function login(){
     const user = document.getElementById("usuario").value;
     const pass = document.getElementById("senha").value;
 
-    const donos = ["Bruno","Leeh"];
-
-    if(donos.includes(user) && pass === "BruuLeeh"){
-        document.getElementById("login").style.display="none";
-        document.getElementById("painel").style.display="block";
-        document.getElementById("bemvindo").innerText="Bem-vindo(a), " + user + "!";
+    if((user === "Bruno" || user === "Leeh") && pass === "BruuLeeh"){
+        usuarioAtual = user;
+        cargoAtual = "Dono";
     } else {
-        alert("Acesso negado!");
+        alert("Acesso negado");
+        return;
     }
+
+    document.getElementById("login").style.display="none";
+    document.getElementById("dashboard").style.display="flex";
+    document.getElementById("bemvindo").innerText="Bem-vindo(a), " + usuarioAtual;
+    document.getElementById("cargo").innerText="Cargo: " + cargoAtual;
+}
+
+function logout(){
+    location.reload();
+}
+
+function mostrar(secao){
+    document.getElementById("home").style.display="none";
+    document.getElementById("staff").style.display="none";
+    document.getElementById(secao).style.display="block";
+}
+
+function adicionarStaff(){
+    const nome = document.getElementById("novoNome").value;
+    const cargo = document.getElementById("novoCargo").value;
+
+    if(nome === "") return;
+
+    staff.push({nome,cargo});
+    atualizarLista();
+}
+
+function atualizarLista(){
+    const lista = document.getElementById("listaStaff");
+    lista.innerHTML="";
+
+    staff.forEach((membro,index)=>{
+        lista.innerHTML += `
+        <div style="margin-top:10px;">
+            ${membro.nome} - ${membro.cargo}
+            <button onclick="remover(${index})" style="width:auto;background:red;margin-left:10px;">Remover</button>
+        </div>`;
+    });
+}
+
+function remover(index){
+    staff.splice(index,1);
+    atualizarLista();
 }
 </script>
 
